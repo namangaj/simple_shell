@@ -33,3 +33,4 @@ Simple shell 1.0 +
 Simple shell 1.0 +
 16. File as input
 Simple shell 1.0 +
+participating on the alx simple shell project
