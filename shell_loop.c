@@ -158,3 +158,7 @@ void fork_cmd(info_t *info)
 		}
 	}
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
