@@ -1,12 +1,12 @@
 #include "shell.h"
 
 /**
- * get_environ - returns the string array copy of our environ
- * @info: Structure containing potential arguments. Used to maintain
- *          constant function prototype.
- * Return: Always 0
+ * fetch_environment - Returns a copy of the environment as a string array.
+ * @info: Structure containing potential arguments.
+ *
+ * Return: Pointer to the string array containing the environment.
  */
-char **get_environ(info_t *info)
+char **fetch_environment(info_t *info)
 {
 	if (!info->environ || info->env_changed)
 	{
@@ -18,77 +18,75 @@ char **get_environ(info_t *info)
 }
 
 /**
- * _unsetenv - Remove an environment variable
- * @info: Structure containing potential arguments. Used to maintain
- *        constant function prototype.
- *  Return: 1 on delete, 0 otherwise
- * @var: the string env var property
+ * discard_environment_variable - Removes an environment variable.
+ * @info: Structure containing potential arguments.
+ * @variable: The string representing the environment variable.
+ *
+ * Return: 1 on deletion, 0 otherwise.
  */
-int _unsetenv(info_t *info, char *var)
+int discard_environment_variable(info_t *info, char *variable)
 {
-	list_t *node = info->env;
-	size_t i = 0;
-	char *p;
+	list_t *current = info->env;
+	size_t index = 0;
+	char *match;
 
-	if (!node || !var)
+	if (!current || !variable)
 		return (0);
 
-	while (node)
+	while (current)
 	{
-		p = starts_with(node->str, var);
-		if (p && *p == '=')
+		match = starts_with(current->str, variable);
+		if (match && *match == '=')
 		{
-			info->env_changed = delete_node_at_index(&(info->env), i);
-			i = 0;
-			node = info->env;
+			info->env_changed = delete_node_at_index(&(info->env), index);
+			index = 0;
+			current = info->env;
 			continue;
 		}
-		node = node->next;
-		i++;
+		current = current->next;
+		index++;
 	}
 	return (info->env_changed);
 }
 
 /**
- * _setenv - Initialize a new environment variable,
- *             or modify an existing one
- * @info: Structure containing potential arguments. Used to maintain
- *        constant function prototype.
- * @var: the string env var property
- * @value: the string env var value
- *  Return: Always 0
+ * set_environment_variable - Initializes or modifies an environment variable.
+ * @info: Structure containing potential arguments.
+ * @variable: The string representing the environment variable.
+ * @value: The string representing the value of the environment variable.
+ *
+ * Return: Always 0.
  */
-int _setenv(info_t *info, char *var, char *value)
+int set_environment_variable(info_t *info, char *variable, char *value)
 {
-	char *buf = NULL;
-	list_t *node;
-	char *p;
+	char *buffer = NULL;
+	list_t *current;
+	char *match;
 
-	if (!var || !value)
+	if (!variable || !value)
 		return (0);
 
-	buf = malloc(_strlen(var) + _strlen(value) + 2);
-	if (!buf)
+	buffer = malloc(_strlen(variable) + _strlen(value) + 2);
+	if (!buffer)
 		return (1);
-	_strcpy(buf, var);
-	_strcat(buf, "=");
-	_strcat(buf, value);
-	node = info->env;
-	while (node)
+	_strcpy(buffer, variable);
+	_strcat(buffer, "=");
+	_strcat(buffer, value);
+	current = info->env;
+	while (current)
 	{
-		p = starts_with(node->str, var);
-		if (p && *p == '=')
+		match = starts_with(current->str, variable);
+		if (match && *match == '=')
 		{
-			free(node->str);
-			node->str = buf;
+			free(current->str);
+			current->str = buffer;
 			info->env_changed = 1;
 			return (0);
 		}
-		node = node->next;
+		current = current->next;
 	}
-	add_node_end(&(info->env), buf, 0);
-	free(buf);
+	add_node_end(&(info->env), buffer, 0);
+	free(buffer);
 	info->env_changed = 1;
 	return (0);
 }
-

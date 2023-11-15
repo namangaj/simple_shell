@@ -1,10 +1,10 @@
 #include "shell.h"
 
 /**
- * clear_info - initializes info_t struct
- * @info: struct address
+ * initialize_info - Sets up the info_t struct.
+ * @info: The address of the info_t struct.
  */
-void clear_info(info_t *info)
+void initialize_info(info_t *info)
 {
 	info->arg = NULL;
 	info->argv = NULL;
@@ -13,15 +13,15 @@ void clear_info(info_t *info)
 }
 
 /**
- * set_info - initializes info_t struct
- * @info: struct address
- * @av: argument vector
+ * configure_info - Configures the info_t struct.
+ * @info: The address of the info_t struct.
+ * @args: The argument vector.
  */
-void set_info(info_t *info, char **av)
+void configure_info(info_t *info, char **args)
 {
 	int i = 0;
 
-	info->fname = av[0];
+	info->fname = args[0];
 	if (info->arg)
 	{
 		info->argv = strtow(info->arg, " \t");
@@ -44,16 +44,16 @@ void set_info(info_t *info, char **av)
 }
 
 /**
- * free_info - frees info_t struct fields
- * @info: struct address
- * @all: true if freeing all fields
+ * release_info - Frees allocated memory in the info_t struct.
+ * @info: The address of the info_t struct.
+ * @full: True if freeing all fields, false otherwise.
  */
-void free_info(info_t *info, int all)
+void release_info(info_t *info, int full)
 {
 	ffree(info->argv);
 	info->argv = NULL;
 	info->path = NULL;
-	if (all)
+	if (full)
 	{
 		if (!info->cmd_buf)
 			free(info->arg);
@@ -64,11 +64,10 @@ void free_info(info_t *info, int all)
 		if (info->alias)
 			free_list(&(info->alias));
 		ffree(info->environ);
-			info->environ = NULL;
+		info->environ = NULL;
 		bfree((void **)info->cmd_buf);
 		if (info->readfd > 2)
 			close(info->readfd);
 		_putchar(BUF_FLUSH);
 	}
 }
-

@@ -1,4 +1,4 @@
-TEAM PROJECT: 0x16. C - Simple Shell (JN/KJ)
+0x16. C - Simple Shel by_Joshua Namanga
 0. Betty would be proud
 Write a beautiful code that passes the Betty checks
 1. Simple shell 0.1
